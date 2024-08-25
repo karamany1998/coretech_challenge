@@ -18,11 +18,11 @@ const int ethernet_header_size = 14;  //used wireshark and saw that it uses ethe
 
 
 struct IP_header {
-	u_char version;		//version
-	u_char tos;		//type of service
-	u_short total_packet_length;		// total length 
-	u_short ID;		// id
-	u_short ip_off;		// fragment offset field 
+	u_int8_t  version_headerLength;	//version
+	u_int8_t TOS;		//type of service
+	u_int16_t	total_packet_length;			// total length 
+	u_int16_t ID;		// id
+	u_int16_t ip_off;		// fragment offset field 
 #define IP_RF 0x8000		/* reserved fragment flag */
 #define IP_DF 0x4000		/* don't fragment flag */
 #define IP_MF 0x2000		/* more fragments flag */
@@ -76,6 +76,8 @@ int main()
 	
 	unsigned long long totalSize = 0  ; 
 	unsigned long long numPackets =  0  ; 
+	
+	unsigned long long packetSize = 0 ; 
 	unsigned long long totalSize_with_header = 0 ; 
 	string mostFreqDest = "";	//most frequenct destination ip
 	unsigned long long num_most_freq =  0;	//how many times most frequent occured
@@ -89,8 +91,11 @@ int main()
 		
 		//move to start of packet  by adding 14 bytes which is the ethernet header  size
 		struct IP_header* current_IP_header = (struct IP_header*)(packet + ethernet_header_size);
-		
+
 		totalSize += pkt_header.len;
+		packetSize += ntohs(current_IP_header->total_packet_length);
+		
+		
 		
 		
 		//the source ip address
@@ -140,8 +145,11 @@ int main()
 		
 	if(numPackets>0)
 	{
-		cout<<"total size is "<<totalSize<<endl;
-		cout<<"average packet size is "<<(double)totalSize / numPackets << endl;
+		cout<<"total size is "<<totalSize<< " bytes"<< endl;
+		cout<<"total size of packets "<<packetSize<< " bytes" << endl;
+		
+		cout << "average frame size is "<<(double)totalSize / numPackets<<endl;
+		cout<<"Excluding ethernet frame header->saverage packet size is "<<(double)packetSize / numPackets << endl;
 		
 	}
 	
