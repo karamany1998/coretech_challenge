@@ -76,7 +76,7 @@ int main()
 	
 	unsigned long long totalSize = 0  ; 
 	unsigned long long numPackets =  0  ; 
-	
+	unsigned long long totalSize_with_header = 0 ; 
 	string mostFreqDest = "";	//most frequenct destination ip
 	unsigned long long num_most_freq =  0;	//how many times most frequent occured
 
@@ -88,10 +88,10 @@ int main()
 		numPackets++;
 		
 		//move to start of packet  by adding 14 bytes which is the ethernet header  size
-		struct IP_header* current_IP_header = (struct IP_header*)(packet + ethernet_header_size);	
+		struct IP_header* current_IP_header = (struct IP_header*)(packet + ethernet_header_size);
 		
-
-		totalSize += current_IP_header->total_packet_length;
+		totalSize += pkt_header.len;
+		
 		
 		//the source ip address
  		int src1 = current_IP_header->src_octet1;
@@ -102,7 +102,6 @@ int main()
  		string src_IP = to_string(src1) +"."+ to_string(src2) +"."+ to_string(src3)+"." + to_string(src4);
  		
  		source_ip_nums[src_IP]++;
- 		
  		
  		
  		//the destination ip address(in dotted notation)
@@ -120,11 +119,7 @@ int main()
  			num_most_freq  = dest_ip_nums[dst_IP] ;
  		}
  		
- 		
- 		
- 		
- 		
-
+ 	
 		int protocolNum = current_IP_header->protocol;
 		
 		//determine the protocol based on    the protocol number field and increment usage by 1
@@ -137,31 +132,23 @@ int main()
 		case 6: protocol_nums["TCP"]++; break;
 		
 		case 17: protocol_nums["UDP"]++; break;
-		
-		
 		default:     protocol_nums["not-important"]++;
 		}
 		
-		
-		
-		
-		
-	
 	}
 	
-	
-	
-	cout<<"total size excluding frame header is "<<totalSize<<endl;
-	
+		
 	if(numPackets>0)
-	cout<<"average packet size is "<<(double)totalSize / numPackets << endl;
+	{
+		cout<<"total size is "<<totalSize<<endl;
+		cout<<"average packet size is "<<(double)totalSize / numPackets << endl;
+		
+	}
+	
 	
 	cout<<"----------------------------------------------------------------"<<endl;
 	
 	
-	
-	
-	cout<<"----------------------------------------"<<endl;
 	
 	cout<<"protocols used "<<endl;
 	for(auto prot : protocol_nums)
