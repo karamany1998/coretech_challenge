@@ -2,21 +2,21 @@
 
 
 
-To build: type "g++ challenge_karamany.cpp -o challenge_karamany -lpcap" in the terminal, make sure that packet-storm.pcap is in the same directory as the .cpp file.
-Then just type "./challenge_karamany" in ther terminal 
+To build: type "g++ challenge_karamany.cpp -o challenge_karamany -lpcap" in the terminal, make sure that packet-storm.pcap is in the same directory as the .cpp file. <br />
+Then just type "./challenge_karamany" in ther terminal  <br />
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Corrected results:
-total size is 147258908 bytes
-total size of packets 133258908 bytes
-average frame size is 147.259
-Excluding ethernet frame header->average packet size is 133.259
+total size is 147258908 bytes <br />
+total size of packets 133258908 bytes <br />
+average frame size is 147.259 <br />
+Excluding ethernet frame header->average packet size is 133.259 <br />
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Some comments:
 1- an ethernet frame has a maximum size of 1518 bytes and I used unsigned long long for the total size of the packets
-==>1000,000 * 1518 <= (sizeof)unsigned long long
+==>1000,000 * 1518 <= (sizeof)unsigned long long <br />
 
-2- I made a mistake when computing the packet length because I did not use the ntohs() function, then when i used the struct pcap_pkthdr to obtain the length, it gave me the correct result and I verfied it using wireshark.
+2- I made a mistake when computing the packet length because I did not use the ntohs() function, then when i used the struct pcap_pkthdr to obtain the length, it gave me the correct result and I verfied it using wireshark. <br />
 
 
 
@@ -25,24 +25,24 @@ Some comments:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-Explanation of my submission for the "Operation Packet Storm" challenge.
+Explanation of my submission for the "Operation Packet Storm" challenge. <br />
 
 First of all, because the pcap file is already saved, we will need to use this function "pcap_open_offline("packet-storm.pcap" , errbuf)" which returns a pcap_t*. If reading the pcap file is not successful, just compare the return value with NULL.
-
+<br />
 To answer the questions for the challenge, we will need to loop over each packet and extract certain information such as packet length, destination ip address.etc
 To do that we can just do a while loop such as this "while(packet = pcap_next(packets, &pkt_header))", which would obtain the next available packet until we are done.
-
+<br />
 
 For each packet we obtain, we can jump 14 bytes which is the ethernet frame header size to obtain the frame payload which is the IP Packet.
 Each IP Packet has an IP header and Payload. From the IP header, we can find the total length and destination IP address.
-
+<br />
 I did this by defining a struct called IP_header. This struct contains all the header fields such as version, time to live, source and destination(divided into 4 octets each).
 
 Now in each iteration through the while loop, we can easily cast the packet to (IP_header*) and then obtain all the information we need.
 to obtain the total length, I initialised a variable called totalSize and just added totalSize += current_IP_header->total_packet_length;
-
+<br />
 To obtain the destination, I obtained the four destination octets and added them in dotted notation, then I had a map called map<string , int> dest_ip_nums which maps all the destination ip address to how many times they occurred in the packets.
-
+<br />
 
 To obtain the 10 most frequent destinations, I just put all the <key, value> pairs in the dest_ip_nums in a vector of pairs and sorted it in descending order based on the number of occurences. 
 Then just looped over the first 10 and printed them to the console.
