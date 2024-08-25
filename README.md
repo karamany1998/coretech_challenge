@@ -5,11 +5,19 @@
 To build: type "g++ challenge_karamany.cpp -o challenge_karamany -lpcap" in the terminal, make sure that packet-storm.pcap is in the same directory as the .cpp file.
 Then just type "./challenge_karamany" in ther terminal 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Corrected results:
+total size is 147258908 bytes
+total size of packets 133258908 bytes
+average frame size is 147.259
+Excluding ethernet frame header->average packet size is 133.259
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Some comments:
 1- an ethernet frame has a maximum size of 1518 bytes and I used unsigned long long for the total size of the packets
 ==>1000,000 * 1518 <= (sizeof)unsigned long long
 
-2- I made a mistake when computing the average packet length, then when i used the struct pcap_pkthdr to obtain the length, it gave me the correct result and I verfied it using wireshark.
+2- I made a mistake when computing the packet length because I did not use the ntohs() function, then when i used the struct pcap_pkthdr to obtain the length, it gave me the correct result and I verfied it using wireshark.
+
 
 
 
