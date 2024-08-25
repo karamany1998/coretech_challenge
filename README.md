@@ -1,12 +1,20 @@
-# coretech_challenge
+# coretech_packet_storm_gradaute_challenge
+
+
+
+To build: type "g++ challenge_karamany.cpp -o challenge_karamany -lpcap" in the terminal, make sure that packet-storm.pcap is in the same directory as the .cpp file.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Some comments:
+1- an ethernet frame has a maximum size of 1518 bytes and I used unsigned long long for the total size of the packets
+==>1000,000 * 1518 <= (sizeof)unsigned long long
 
 
 
 
-To build : type "g++ challenge_karamany.cpp -o challenge_karamany -lpcap" in the terminal, make sure that packet-storm.pcap is in the same directory as the .cpp file.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-Explaination of my submission for the "Operation Packet Storm" challenge.
+Explanation of my submission for the "Operation Packet Storm" challenge.
 
 First of all, because the pcap file is already saved, we will need to use this function "pcap_open_offline("packet-storm.pcap" , errbuf)" which returns a pcap_t*. If reading the pcap file is not successful, just compare the return value with NULL.
 
@@ -22,7 +30,7 @@ I did this by defining a struct called IP_header. This struct contains all the h
 Now in each iteration through the while loop, we can easily cast the packet to (IP_header*) and then obtain all the information we need.
 to obtain the total length, I initialised a variable called totalSize and just added totalSize += current_IP_header->total_packet_length;
 
-To obtain the destination, I obtained the four destination octets and added them in dotted notation, then I had a map called map<string , int> dest_ip_nums which maps all the destination ip address to how many times they occured in the packets.
+To obtain the destination, I obtained the four destination octets and added them in dotted notation, then I had a map called map<string , int> dest_ip_nums which maps all the destination ip address to how many times they occurred in the packets.
 
 
 To obtain the 10 most frequent destinations, I just put all the <key, value> pairs in the dest_ip_nums in a vector of pairs and sorted it in descending order based on the number of occurences. 
